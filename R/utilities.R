@@ -2306,6 +2306,9 @@ ExportGroupBW  <- function(
     message("Please install rtracklayer. http://www.bioconductor.org/packages/rtracklayer/") 
     return(NULL)
   }
+  if (length(Fragments(object)) == 0) {
+    stop("This object does not have Fragments, cannot generate bigwig.")
+  }
   assay <- SetIfNull(x = assay, y = DefaultAssay(object = object))
   obj.groups <- GetGroups(
     object = object,
