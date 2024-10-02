@@ -83,3 +83,74 @@ test_that("ExtractCell works", {
     object = ExtractCell(x = "chr1\t1\t300\tTGCA\t1"), expected = "TGCA"
   )
 })
+
+test_that("CreateBWGroup works", {
+  outdir <- file.path(tempdir(), "createBW")
+  dir.create(outdir, showWarnings = FALSE)
+  fpath <- system.file("extdata", "fragments.tsv.gz", package="Signac")
+  cells <- colnames(x = atac_small)
+  names(x = cells) <- cells
+  frags <- CreateFragmentObject(
+    path = fpath,
+    cells = cells,
+    verbose = FALSE,
+    validate = FALSE
+  )
+  Fragments(atac_small) <- frags
+  SplitFragments(
+    object = atac_small,
+    assay = "peaks",
+    group.by = "seurat_clusters",
+    outdir = outdir
+  )
+  CreateBWGroup(
+    groupNamei = "0",
+    availableChr = "chr1",
+    chromLengths = c("chr1" = 249250621),
+    tiles = GRanges(seqnames = "chr1", ranges = IRanges(start = 1, end = 249250621)),
+    normBy = NULL,
+    tileSize = 249250621,
+    normMethod = 'RC',
+    cutoff = NULL,
+    outdir = outdir
+  )
+  expect_equal(object = length(list.files(outdir)), expected = 3)
+  expect(file.exists(file.path(outdir, "0-TileSize-249250621-normMethod-rc.bw")), "File does not exist.")
+  bw <- rtracklayer::import.bw(file.path(outdir, "0-TileSize-249250621-normMethod-rc.bw"))
+  expect_equal(object = bw$score, 20000)
+})
+
+test_that("ExportGroupBW works", {
+  outdir <- file.path(tempdir(), "ExportGroupBW")
+  dir.create(outdir, showWarnings = FALSE)
+  fpath <- system.file("extdata", "fragments.tsv.gz", package="Signac")
+  cells <- colnames(x = atac_small)
+  names(x = cells) <- cells
+  frags <- CreateFragmentObject(
+    path = fpath,
+    cells = cells,
+    verbose = FALSE,
+    validate = FALSE
+  )
+  Fragments(atac_small) <- frags
+  ExportGroupBW(
+    object = atac_small,
+    assay = NULL,
+    group.by = NULL,
+    idents = NULL,
+    normMethod = "RC",
+    tileSize = 100,
+    minCells = 5,
+    cutoff = NULL,
+    chromosome = NULL,
+    outdir = outdir,
+    verbose = TRUE
+  )
+  expect_equal(object = length(list.files(outdir)), expected = 4)
+  expect(
+    file.exists(file.path(outdir, "0-TileSize-100-normMethod-rc.bw")),
+    "File does not exist."
+  )
+  bw <- rtracklayer::import.bw(file.path(outdir, "0-TileSize-100-normMethod-rc.bw"))
+  assert_equal(object = length(seqlengths(bw)), 298)
+})
