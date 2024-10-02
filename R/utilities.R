@@ -2481,7 +2481,7 @@ SparseSpearmanCor <- function(X, Y = NULL, cov = FALSE) {
 #' @param verbose Display messages
 #'
 #' @importFrom GenomicRanges seqlengths GRanges slidingWindows
-#' @importFrom future plan
+#' @importFrom future plan nbrOfWorkers
 #' @importFrom future.apply future_lapply
 #' @importFrom pbapply pbapply
 #'
