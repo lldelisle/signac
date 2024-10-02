@@ -2480,12 +2480,11 @@ SparseSpearmanCor <- function(X, Y = NULL, cov = FALSE) {
 #' @param outdir Directory to write output files (splitted bed and bigwigs)
 #' @param verbose Display messages
 #'
-#' @importFrom GenomicRanges seqlengths GRanges slidingWindows
+#' @importFrom GenomicRanges GRanges slidingWindows
 #' @importFrom future plan nbrOfWorkers
 #' @importFrom future.apply future_lapply
 #' @importFrom pbapply pbapply
 #'
-#' @return
 #' @export
 #'
 #' @examples
@@ -2615,7 +2614,7 @@ ExportGroupBW  <- function(
 # @param outdir The output directory for bigwig file
 #
 #' @importFrom rtracklayer import export.bw
-#' @importFrom GenomicRanges seqnames seqlengths GRanges coverage
+#' @importFrom GenomicRanges seqnames GRanges coverage
 #' @importFrom BiocGenerics which
 #' @importFrom S4Vectors match
 #' @importFrom Matrix sparseMatrix rowSums
