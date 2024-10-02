@@ -2508,10 +2508,6 @@ ExportGroupBW  <- function(
   if (!dir.exists(outdir)){
     dir.create(outdir)
   }
-  if (!requireNamespace("rtracklayer", quietly = TRUE)) { 
-    message("Please install rtracklayer. http://www.bioconductor.org/packages/rtracklayer/") 
-    return(NULL)
-  }
   if (length(Fragments(object)) == 0) {
     stop("This object does not have Fragments, cannot generate bigwig.")
   }
@@ -2629,10 +2625,6 @@ CreateBWGroup <- function(
     cutoff,
     outdir
 ) {
-  if (!requireNamespace("rtracklayer", quietly = TRUE)) { 
-    message("Please install rtracklayer. http://www.bioconductor.org/packages/rtracklayer/") 
-    return(NULL) 
-  }
   normMethod <- tolower(x = normMethod)
   # Read the fragments file associated to the group
   fragi <- rtracklayer::import(
