@@ -2515,11 +2515,12 @@ ExportGroupBW  <- function(
   }
   assay <- SetIfNull(x = assay, y = DefaultAssay(object = object))
   DefaultAssay(object = object) <- assay
-  group.by <- SetIfNull(x = group.by, y = 'ident')
-  Idents(object = object) <- group.by
-  idents <- SetIfNull(x = idents, y = levels(x = object))
-  GroupsNames <- names(x = table(object[[group.by]])[table(object[[group.by]]) > minCells])
-  GroupsNames <- GroupsNames[GroupsNames %in% idents]
+  obj.groups <- GetGroups(
+    object = object,
+    group.by = group.by,
+    idents = idents
+  )
+  GroupsNames <- names(x = table(obj.groups)[table(obj.groups) > minCells])
   # Check if output files already exist
   lapply(X = GroupsNames, FUN = function(x) {
     fn <- paste0(outdir, .Platform$file.sep, x, ".bed")
