@@ -2502,19 +2502,16 @@ ExportGroupBW  <- function(
     minCells = 5,
     cutoff = NULL,
     chromosome = NULL,
-    outdir = NULL,
-    verbose=TRUE
+    outdir = getwd(),
+    verbose = TRUE
 ) {
-  if (is.null(outdir)) {
-    stop("Must supply the output directory")
-  }
   # Check if temporary directory exist
   if (!dir.exists(outdir)){
     dir.create(outdir)
   }
   if (!requireNamespace("rtracklayer", quietly = TRUE)) { 
     message("Please install rtracklayer. http://www.bioconductor.org/packages/rtracklayer/") 
-    return(NULL) 
+    return(NULL)
   }
   assay <- SetIfNull(x = assay, y = DefaultAssay(object = object))
   DefaultAssay(object = object) <- assay
