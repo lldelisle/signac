@@ -39,13 +39,13 @@ AddChromatinModule <- function(
   if (!inherits(x = object[[assay]], what = "ChromatinAssay")) {
     stop("The requested assay is not a ChromatinAssay.")
   }
-  
+
   # first find index of each feature
   feat.idx <- sapply(X = features, FUN = fmatch, rownames(x = object[[assay]]))
   j <- sapply(X = seq_along(along.with = features), FUN = function(x) {
     rep(x = x, length(x = features[[x]]))
   })
-  
+
   # construct sparse matrix with features
   mat <- sparseMatrix(
     i = unlist(x = feat.idx, use.names = FALSE),
@@ -55,7 +55,7 @@ AddChromatinModule <- function(
   )
   rownames(x = mat) <- rownames(x = object[[assay]])
   colnames(x = mat) <- names(x = features)
-  
+
   # run chromVAR
   cv <- RunChromVAR(
     object = object[[assay]],
@@ -64,7 +64,7 @@ AddChromatinModule <- function(
     verbose = verbose,
     ...
   )
-  
+
   # add module scores to metadata
   chromvar.data <- GetAssayData(object = cv, slot = "data")
   object <- AddMetaData(
@@ -334,7 +334,7 @@ GeneActivity <- function(
       stop("No genes remaining after filtering for requested biotypes")
     }
   }
-  
+
   # filter genes if provided
   if (!is.null(x = features)) {
     transcripts <- transcripts[transcripts$gene_name %in% features]
@@ -349,14 +349,14 @@ GeneActivity <- function(
       stop("No genes remaining after filtering for max.width")
     }
   }
-  
+
   # extend to include promoters
   transcripts <- Extend(
     x = transcripts,
     upstream = extend.upstream,
     downstream = extend.downstream
   )
-  
+
   # quantify
   frags <- Fragments(object = object[[assay]])
   if (length(x = frags) == 0) {
@@ -375,7 +375,7 @@ GeneActivity <- function(
   names(x = gene.key) <- GRangesToString(grange = transcripts)
   rownames(x = counts) <- as.vector(x = gene.key[rownames(x = counts)])
   counts <- counts[rownames(x = counts) != "", ]
-  
+
   return(counts)
 }
 
@@ -409,7 +409,7 @@ GetGRangesFromEnsDb <- function(
   if (standard.chromosomes) {
     whole.genome <- keepStandardChromosomes(whole.genome, pruning.mode = "coarse")
   }
-  
+
   # extract genes from each chromosome
   my_lapply <- ifelse(test = verbose, yes = pblapply, no = lapply)
   tx <- my_lapply(X = seq_along(whole.genome), FUN = function(x){
@@ -418,7 +418,7 @@ GetGRangesFromEnsDb <- function(
       which = whole.genome[x],
       columns = c("tx_id", "gene_name", "gene_id", "gene_biotype")))
   })
-  
+
   # combine
   tx <- do.call(what = c, args = tx)
   tx <- tx[tx$gene_biotype %in% biotypes]
@@ -1307,7 +1307,7 @@ GetReadsInRegion <- function(
 ) {
   file.to.object <- names(x = cellmap)
   names(x = file.to.object) <- cellmap
-  
+
   if (verbose) {
     message("Extracting reads in requested region")
   }
@@ -1679,7 +1679,7 @@ CreateRegionPileupMatrix <- function(
   on_plus <- strand(x = regions) == "+" | strand(x = regions) == "*"
   plus.strand <- regions[on_plus, ]
   minus.strand <- regions[!on_plus, ]
-  
+
   # get cut matrices for each strand
   if (verbose) {
     message("Finding + strand cut sites")
@@ -1701,7 +1701,7 @@ CreateRegionPileupMatrix <- function(
     cells = cells,
     verbose = FALSE
   )
-  
+
   # reverse minus strand and add together
   if (is.null(x = cut.matrix.plus)) {
     full.matrix <- cut.matrix.minus[, rev(x = colnames(x = cut.matrix.minus))]
@@ -1755,13 +1755,13 @@ ApplyMatrixByGroup <- function(
   }
   ngroup <- length(x = all.groups)
   npos <- ncol(x = mat)
-  
+
   group <- unlist(
     x = lapply(X = all.groups, FUN = function(x) rep(x, npos))
   )
   position <- rep(x = as.numeric(x = colnames(x = mat)), ngroup)
   count <- vector(mode = "numeric", length = npos * ngroup)
-  
+
   for (i in seq_along(along.with = all.groups)) {
     grp <- all.groups[[i]]
     if (is.na(x = grp)) {
@@ -1776,13 +1776,13 @@ ApplyMatrixByGroup <- function(
     }
     count[((i - 1) * npos + 1):((i * npos))] <- totals
   }
-  
+
   # construct dataframe
   coverages <- data.frame(
     "group" = group, "position" = position, "count" = count,
     stringsAsFactors = FALSE
   )
-  
+
   if (normalize) {
     scale.factor <- SetIfNull(
       x = scale.factor, y = median(x = group.scale.factors)
@@ -1911,12 +1911,12 @@ IsMatrixEmpty <- function(x) {
 # information
 GetRowsToMerge <- function(assay.list, all.ranges, reduced.ranges) {
   revmap <- as.vector(x = reduced.ranges$revmap)
-  
+
   # get indices of ranges that changed
   revmap.lengths <- sapply(X = revmap, FUN = length)
   changed.ranges <- which(x = revmap.lengths > 1)
   grange.string <- GRangesToString(grange = reduced.ranges[changed.ranges])
-  
+
   # preallocate
   offsets <- list()
   results <- list()
@@ -1935,7 +1935,7 @@ GetRowsToMerge <- function(assay.list, all.ranges, reduced.ranges) {
     results[['matrix']][[i]] <- matrix.indices
     results[['grange']][[i]] <- granges
   }
-  
+
   # find sets of ranges for each dataset
   counter <- vector(mode = "numeric", length = length(x = assay.list))
   for (x in seq_along(along.with = changed.ranges)) {
@@ -1992,15 +1992,15 @@ MergeOverlappingRows <- function(
       )
       return(merge.counts)
     }
-    
+
     # transpose for faster access since matrix is column major
     counts <- t(x = counts)
-    
+
     # get rows to merge
     mrows <- mergeinfo$matrix[[i]]
     new.rownames <- mergeinfo$grange[[i]]
     nrep <- rle(x = new.rownames)
-    
+
     # allocate
     todelete <- c()
     newmat <- vector(
@@ -2058,13 +2058,13 @@ MergeOverlappingRows <- function(
     to.rename.names <- to.rename.names[1:idx.counter]
     newmat <- newmat[1:(y - 1)]
     newmat.names <- newmat.names[1:(y - 1)]
-    
+
     # transpose back
     counts <- t(x = counts)
-    
+
     # rename matrix rows that weren't merged
     rownames(counts)[to.rename.idx] <- to.rename.names
-    
+
     if (y == 1) {
       # no rows were merged, can return counts
       merge.counts[[i]] <- counts
@@ -2084,12 +2084,12 @@ MergeOverlappingRows <- function(
       merged.mat <- Reduce(f = rbind, x = newmat)
       rownames(merged.mat) <- newmat.names
       merged.mat <- as(object = merged.mat, Class = "CsparseMatrix")
-      
+
       # remove rows from count matrix that were merged
       mat.rows <- seq_len(length.out = nrow(x = counts))
       tokeep <- setdiff(mat.rows, todelete)
       counts <- counts[tokeep, ]
-      
+
       # add new merged rows to counts
       counts <- rbind(counts, merged.mat)
       merge.counts[[i]] <- counts
@@ -2352,7 +2352,7 @@ ExportGroupBW  <- function(
       end = as.numeric(x = chromLengths)
       )
     )
-  
+
   if (verbose) {
     message("Creating tiles")
   }
@@ -2429,7 +2429,7 @@ CreateBWGroup <- function(
     outdir,
     paste0(groupNamei, "-TileSize-",tileSize,"-normMethod-",normMethod,".bw")
   )
-  
+
   covList <- lapply(X = seq_along(availableChr), FUN = function(k) {
     fragik <- fragi[seqnames(fragi) == availableChr[k],]
     tilesk <- tiles[BiocGenerics::which(S4Vectors::match(seqnames(tiles), availableChr[k], nomatch = 0) > 0)]
@@ -2445,7 +2445,7 @@ CreateBWGroup <- function(
       }
       # Create Sparse Matrix
       matchID <- S4Vectors::match(mcols(fragik)$name, cellGroupi)
-      
+
       # For each tiles of this chromosome, create start tile and end tile row,
       # set the associated counts matching with the fragments
       mat <- sparseMatrix(
@@ -2455,7 +2455,7 @@ CreateBWGroup <- function(
         x = rep(1, 2*length(x = fragik)),
         dims = c(nTiles, length(x = cellGroupi))
       )
-      
+
       # Max count for a cells in a tile is set to cutoff
       if (!is.null(x = cutoff)){
         mat@x[mat@x > cutoff] <- cutoff
@@ -2480,7 +2480,7 @@ CreateBWGroup <- function(
     tilesk <- coverage(tilesk, weight = tilesk$reads)[[availableChr[k]]]
     tilesk
   })
-  
+
   names(covList) <- availableChr
   covList <- as(object = covList, Class = "RleList")
   rtracklayer::export.bw(object = covList, con = covFile)
