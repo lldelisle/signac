@@ -2477,7 +2477,7 @@ SparseSpearmanCor <- function(X, Y = NULL, cov = FALSE) {
 #' @param minCells The minimum of cells in a group to be exported
 #' @param cutoff The maximum number of fragments in a given genomic tile
 #' @param chromosome A chromosomes vector to be exported
-#' @param outdir The output directory for bigwig file
+#' @param outdir Directory to write output files (splitted bed and bigwigs)
 #' @param verbose Display messages
 #'
 #' @importFrom GenomicRanges seqlengths GRanges slidingWindows
