@@ -2514,7 +2514,6 @@ ExportGroupBW  <- function(
     return(NULL)
   }
   assay <- SetIfNull(x = assay, y = DefaultAssay(object = object))
-  DefaultAssay(object = object) <- assay
   obj.groups <- GetGroups(
     object = object,
     group.by = group.by,
