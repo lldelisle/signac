@@ -2505,6 +2505,9 @@ ExportGroupBW  <- function(
     outdir = NULL,
     verbose=TRUE
 ) {
+  if (is.null(outdir)) {
+    stop("Must supply the output directory")
+  }
   # Check if temporary directory exist
   if (!dir.exists(outdir)){
     dir.create(outdir)
