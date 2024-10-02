@@ -152,5 +152,5 @@ test_that("ExportGroupBW works", {
     "File does not exist."
   )
   bw <- rtracklayer::import.bw(file.path(outdir, "0-TileSize-100-normMethod-rc.bw"))
-  assert_equal(object = length(seqlengths(bw)), 298)
+  expect_equal(object = length(seqlengths(bw)), 298)
 })
