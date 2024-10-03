@@ -2304,6 +2304,22 @@ ExportGroupBW  <- function(
   if (length(Fragments(object)) == 0) {
     stop("This object does not have Fragments, cannot generate bigwig.")
   }
+  # Get chromosome information
+  if(!is.null(x = chromosome)){
+    seqlevels(object) <- chromosome
+  }
+  chromLengths <- seqlengths(object)
+  if (is.null(chromLengths)) {
+    stop("Object has no seqlength, bigwig coverages cannot be evaluated.")
+  }
+  availableChr <- names(chromLengths)
+  chromSizes <- GRanges(
+    seqnames = availableChr,
+    ranges = IRanges(
+      start = rep(1, length(x = availableChr)),
+      end = as.numeric(x = chromLengths)
+    )
+  )
   assay <- SetIfNull(x = assay, y = DefaultAssay(object = object))
   obj.groups <- GetGroups(
     object = object,
@@ -2339,22 +2355,6 @@ ExportGroupBW  <- function(
       normBy <- object[[normMethod, drop = FALSE]]
     }
   }
-  # Get chromosome information
-  if(!is.null(x = chromosome)){
-    seqlevels(object) <- chromosome
-  }
-  chromLengths <- seqlengths(object)
-  if (is.null(chromLengths)) {
-    stop("Object has no seqlength, bigwig coverages cannot be evaluated.")
-  }
-  availableChr <- names(chromLengths)
-  chromSizes <- GRanges(
-    seqnames = availableChr,
-    ranges = IRanges(
-      start = rep(1, length(x = availableChr)),
-      end = as.numeric(x = chromLengths)
-      )
-    )
 
   if (verbose) {
     message("Creating tiles")
