@@ -2504,6 +2504,7 @@ ExportGroupBW  <- function(
   outdir = getwd(),
   verbose = TRUE
 ) {
+  # This function is nearly a copy of ArchR getGroupBW
   # Check if temporary directory exist
   if (!dir.exists(outdir)){
     dir.create(outdir)
@@ -2625,6 +2626,7 @@ CreateBWGroup <- function(
   cutoff,
   outdir
 ) {
+  # This function is nearly a copy of ArchR .createGroupBW
   normMethod <- tolower(x = normMethod)
   # Read the fragments file associated to the group
   fragi <- rtracklayer::import(
