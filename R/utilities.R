@@ -2345,10 +2345,7 @@ ExportGroupBW  <- function(
   }
   chromLengths <- seqlengths(object)
   if (is.null(chromLengths)) {
-    message("Object has no seqlength. They will be estimated.")
-    range_granges <- range(granges(object))
-    chromLengths <- end(range_granges)
-    names(chromLengths) <- seqnames(range_granges)
+    stop("Object has no seqlength, bigwig coverages cannot be evaluated.")
   }
   availableChr <- names(chromLengths)
   chromSizes <- GRanges(
