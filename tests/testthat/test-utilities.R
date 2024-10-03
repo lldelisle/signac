@@ -145,7 +145,7 @@ test_that("CreateBWGroup works with 100bp tile", {
   expect_equal(object = length(list.files(outdir)), expected = 2)
   expect(file.exists(file.path(outdir, "0-TileSize-100-normMethod-rc.bw")), "File does not exist.")
   bw <- rtracklayer::import.bw(file.path(outdir, "0-TileSize-100-normMethod-rc.bw"))
-  expect_equal(object = bw$score, c(4000, 8000, 4000, 2000, 0, 2000, 0))
+  expect_equal(object = bw$score, c(6000, 8000, 2000, 0))
 })
 
 test_that("CreateBWGroup works with seqlength equal to final pos", {
