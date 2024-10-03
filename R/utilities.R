@@ -2343,8 +2343,14 @@ ExportGroupBW  <- function(
   if(!is.null(x = chromosome)){
     seqlevels(object) <- chromosome
   }
-  availableChr <- names(x = seqlengths(object))
   chromLengths <- seqlengths(object)
+  if (is.null(chromLengths)) {
+    message("Object has no seqlength. They will be estimated.")
+    range_granges <- range(granges(object))
+    chromLengths <- end(range_granges)
+    names(chromLengths) <- seqnames(range_granges)
+  }
+  availableChr <- names(chromLengths)
   chromSizes <- GRanges(
     seqnames = availableChr,
     ranges = IRanges(
