@@ -2421,7 +2421,8 @@ CreateBWGroup <- function(
   normMethod <- tolower(x = normMethod)
   # Read the fragments file associated to the group
   fragi <- rtracklayer::import(
-    paste0(outdir, .Platform$file.sep, groupNamei, ".bed"), format = "bed"
+    paste0(outdir, .Platform$file.sep, groupNamei, ".bed"),
+    format = "bed"
   )
   cellGroupi <- unique(x = fragi$name)
   # Open the writing bigwig file
@@ -2448,9 +2449,11 @@ CreateBWGroup <- function(
 
       # For each tiles of this chromosome, create start tile and end tile row,
       # set the associated counts matching with the fragments
+      # This changes compared to ArchR version 1.0.2
+      # See https://github.com/GreenleafLab/ArchR/issues/2214
       mat <- sparseMatrix(
-        i = c(trunc(x = start(x = fragik) / tileSize),
-              trunc(x = end(x = fragik) / tileSize)) + 1,
+        i = c(trunc(x = (start(x = fragik) - 1) / tileSize),
+              trunc(x = (end(x = fragik) - 1) / tileSize)) + 1,
         j = as.vector(x = c(matchID, matchID)),
         x = rep(1, 2*length(x = fragik)),
         dims = c(nTiles, length(x = cellGroupi))
