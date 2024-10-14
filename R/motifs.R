@@ -192,11 +192,14 @@ RunChromVAR.ChromatinAssay <- function(
     warning("Count matrix contains non-integer values.
             ChromVAR should only be run on integer counts.")
   }
-  idx.keep <- rowSums(x = peak.matrix) > 0
-  peak.matrix <- peak.matrix[idx.keep, , drop = FALSE]
-  motif.matrix <- motif.matrix[idx.keep, , drop = FALSE]
+  regions.keep <- intersect(
+    rownames(peak.matrix)[rowSums(x = peak.matrix) > 0],
+    rownames(motif.matrix)
+  )
+  peak.matrix <- peak.matrix[regions.keep, , drop = FALSE]
+  motif.matrix <- motif.matrix[regions.keep, , drop = FALSE]
   peak.ranges <- granges(x = object)
-  peak.ranges <- peak.ranges[idx.keep]
+  peak.ranges <- peak.ranges[match(regions.keep, rownames(object))]
   chromvar.obj <- SummarizedExperiment::SummarizedExperiment(
     assays = list(counts = peak.matrix),
     rowRanges = peak.ranges
