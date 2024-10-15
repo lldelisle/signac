@@ -184,6 +184,12 @@ jobs:
           BiocManager::install("BiocGenerics")
         shell: Rscript {0}
 
+      - name: Install motifmatchr
+        run: |
+          ## Install motifmatchr
+          BiocManager::install("motifmatchr")
+        shell: Rscript {0}
+
       - name: Session info
         run: |
           options(width = 100)
