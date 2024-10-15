@@ -184,14 +184,6 @@ jobs:
           BiocManager::install("BiocGenerics")
         shell: Rscript {0}
 
-      - name: Install TFBSTools and BSgenomehg19 for test-motifs
-        run: |
-          ## Install TFBSTools
-          BiocManager::install("TFBSTools")
-          ## Install BSgenomehg19
-          BiocManager::install("BSgenome.Hsapiens.UCSC.hg19")
-        shell: Rscript {0}
-
       - name: Session info
         run: |
           options(width = 100)
