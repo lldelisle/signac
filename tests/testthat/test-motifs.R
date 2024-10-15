@@ -2,15 +2,16 @@ pwm <- readRDS("../testdata/pwm_2motifs.rds")
 genome.fasta <- system.file("extdata", "chr1_start.fa", package = "Signac")
 genome <- Rsamtools::FaFile(genome.fasta)
 
-test_that("AddMotifs works", {
-  motif <- AddMotifs(
-    atac_small[["peaks"]],
-    genome,
-    pwm,
-    verbose = FALSE
-  )
-  expect_equal(dim(Motifs(motif)), c(323, 2))
-})
+# Cannot be tested if motifmatchr is not a dependency
+# test_that("AddMotifs works", {
+#   motif <- AddMotifs(
+#     atac_small[["peaks"]],
+#     genome,
+#     pwm,
+#     verbose = FALSE
+#   )
+#   expect_equal(dim(Motifs(motif)), c(323, 2))
+# })
 
 test_that("AddMotifs works with fakechr", {
   fpath <- system.file("extdata", "fragments.tsv.gz", package = "Signac")
@@ -34,12 +35,14 @@ test_that("AddMotifs works with fakechr", {
     fragments = fragments,
     verbose = FALSE
   )
-  motif <- AddMotifs.default(
-    granges(object)[100:nrow(object)],
-    genome,
-    pwm,
-    verbose = FALSE
-  )
+  # This requires motifmatchr
+  # motif <- AddMotifs.default(
+  #   granges(object)[100:nrow(object)],
+  #   genome,
+  #   pwm,
+  #   verbose = FALSE
+  # )
+  motif <- readRDS("../testdata/motifObj_2_225.rds")
   expect_equal(dim(motif), c(225, 2))
   test <- SetAssayData(
     object = object,

@@ -105,27 +105,28 @@ test_that("NucleosomeSignal works", {
     expected = c(NaN, NaN, 0.0, 2.5, NaN, NaN)
   )
 })
-test_that("CreateMotifMatrix works", {
-  pwm <- readRDS("../testdata/pwm_2motifs.rds")
-  genome.fasta <- system.file("extdata", "chr1_start.fa", package = "Signac")
-  genome <- Rsamtools::FaFile(genome.fasta)
-  motif.matrix <- CreateMotifMatrix(
-    features = granges(atac_small),
-    pwm = pwm,
-    genome = genome
-  )
-  expect_equal(dim(motif.matrix), c(323, 2))
-  features <- suppressWarnings(c(
-    granges(atac_small),
-    GenomicRanges::GRanges(
-      seqnames = "fake_chr",
-      ranges = IRanges::IRanges(start = 1, end = 1000)
-    )
-  ))
-  motif.matrix <- CreateMotifMatrix(
-    features = features,
-    pwm = pwm,
-    genome = BSgenome.Hsapiens.UCSC.hg19
-  )
-  expect_equal(dim(motif.matrix), c(324, 2))
-})
+# Cannot be tested if motifmatchr is not a dependency
+# test_that("CreateMotifMatrix works", {
+#   pwm <- readRDS("../testdata/pwm_2motifs.rds")
+#   genome.fasta <- system.file("extdata", "chr1_start.fa", package = "Signac")
+#   genome <- Rsamtools::FaFile(genome.fasta)
+#   motif.matrix <- CreateMotifMatrix(
+#     features = granges(atac_small),
+#     pwm = pwm,
+#     genome = genome
+#   )
+#   expect_equal(dim(motif.matrix), c(323, 2))
+#   features <- suppressWarnings(c(
+#     granges(atac_small),
+#     GenomicRanges::GRanges(
+#       seqnames = "fake_chr",
+#       ranges = IRanges::IRanges(start = 1, end = 1000)
+#     )
+#   ))
+#   motif.matrix <- CreateMotifMatrix(
+#     features = features,
+#     pwm = pwm,
+#     genome = BSgenome.Hsapiens.UCSC.hg19
+#   )
+#   expect_equal(dim(motif.matrix), c(324, 2))
+# })
