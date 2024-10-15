@@ -930,7 +930,8 @@ SetAssayData.ChromatinAssay <- function(
     new.data@data <- CheckFeaturesNames(new.data@data)
     # TODO allow mismatching row names, but check that the genomic ranges
     # are equivalent. Requires adding a granges slot to the motif class
-    if (!all(rownames(x = object) == rownames(x = new.data))) {
+    if (nrow(x = object) != nrow(x = new.data) ||
+        !all(rownames(x = object) == rownames(x = new.data))) {
       keep.features <- intersect(x = rownames(x = new.data),
                                  y = rownames(x = object))
       if (length(x = keep.features) == 0) {
@@ -939,8 +940,12 @@ SetAssayData.ChromatinAssay <- function(
       }
       else {
         warning("Features do not match in ChromatinAssay and Motif object.
-                Subsetting the Motif object.")
+                Subsetting/Filling the Motif object.")
         new.data <- new.data[keep.features, ]
+        new.data@data <- AddMissing(
+          new.data@data,
+          features = rownames(x = object)
+        )
       }
     }
     methods::slot(object = object, name = layer) <- new.data
