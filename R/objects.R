@@ -787,7 +787,7 @@ RenameCells.Fragment <- function(object, new.names, ...) {
   return(object)
 }
 
-#' @importFrom SeuratObject SetAssayData
+#' @importFrom SeuratObject SetAssayData CheckFeaturesNames
 #' @importFrom GenomeInfoDb genome Seqinfo
 #' @importFrom lifecycle deprecated is_present
 #' @method SetAssayData ChromatinAssay
@@ -926,6 +926,8 @@ SetAssayData.ChromatinAssay <- function(
     if (!inherits(x = new.data, what = "Motif")) {
       stop("Must provide a Motif class object")
     }
+    # Set the feature names compatible with Seurat
+    new.data@data <- CheckFeaturesNames(new.data@data)
     # TODO allow mismatching row names, but check that the genomic ranges
     # are equivalent. Requires adding a granges slot to the motif class
     if (!all(rownames(x = object) == rownames(x = new.data))) {
