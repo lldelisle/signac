@@ -999,8 +999,10 @@ SetMotifData.Motif <- function(object, slot, new.data, ...) {
 #' @export
 #' @concept motifs
 #' @examples
+#' new.data <- matrix(sample(c(0, 1), size = nrow(atac_small[["peaks"]]) * 10, replace = TRUE), nrow = nrow(atac_small[["peaks"]]))
+#' rownames(new.data) <- rownames(atac_small[["peaks"]])
 #' SetMotifData(
-#'   object = atac_small[['peaks']], slot = 'data', new.data = matrix(1:2)
+#'   object = atac_small[['peaks']], slot = 'data', new.data = new.data
 #' )
 #' @method SetMotifData ChromatinAssay
 SetMotifData.ChromatinAssay <- function(object, slot, new.data, ...) {
