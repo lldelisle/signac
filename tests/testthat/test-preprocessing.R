@@ -105,3 +105,33 @@ test_that("NucleosomeSignal works", {
     expected = c(NaN, NaN, 0.0, 2.5, NaN, NaN)
   )
 })
+
+test_that("CreateMotifMatrix works", {
+  library(JASPAR2022)
+  library(TFBSTools)
+  library(BSgenome.Hsapiens.UCSC.hg19)
+
+  pwm <- getMatrixSet(
+    x = JASPAR2022,
+    opts = list(species = 9606, all_versions = FALSE)
+  )
+  motif.matrix <- CreateMotifMatrix(
+    features = granges(atac_small),
+    pwm = pwm,
+    genome = BSgenome.Hsapiens.UCSC.hg19
+  )
+  expect_equal(dim(motif.matrix), c(323, 692))
+  features <- suppressWarnings(c(
+    granges(atac_small),
+    GenomicRanges::GRanges(
+      seqnames = "fake_chr",
+      ranges = IRanges::IRanges(start = 1, end = 1000)
+    )
+  ))
+  motif.matrix <- CreateMotifMatrix(
+    features = features,
+    pwm = pwm,
+    genome = BSgenome.Hsapiens.UCSC.hg19
+  )
+  expect_equal(dim(motif.matrix), c(324, 692))
+})
